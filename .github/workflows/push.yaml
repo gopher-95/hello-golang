@@ -1,15 +1,32 @@
 name: golang-pipeline
+
 on: push
+
 jobs:
   test:
     runs-on: ubuntu-latest
     container: golang:1.22
+    
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Unit Tests
-        run: GOOS=linux GOARCH=amd64 go test
+      - name: Debug - Show files
+        run: |
+          pwd
+          ls -la
+          echo "=== go.mod content ==="
+          cat go.mod
+
+      - name: Debug - Go version and env
+        run: |
+          go version
+          go env
+
+      - name: Run Unit Tests with verbose output
+        run: go test -v -race ./...
 
       - name: Vet
-        run: |
-          go vet ./...
+        run: go vet ./...
+
+      - name: Build
+        run: go build -o main .
